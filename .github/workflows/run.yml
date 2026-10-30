@@ -7,7 +7,7 @@ on:
     types: started
   workflow_dispatch:
   schedule:
-    - cron: 35 2 * * *
+    - cron: 20 19 * * *
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -54,7 +54,10 @@ jobs:
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: npm start
+          retry_wait_seconds: 60
+          command: |
+            npm start 2>&1 | tee /tmp/run.log
+            grep -q "个人签到任务" /tmp/run.log || { echo "::error::本次签到未成功，触发重试"; exit 1; }
 
       - name: 🔑 Compute token hash
         if: always()
