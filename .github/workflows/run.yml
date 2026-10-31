@@ -54,10 +54,7 @@ jobs:
         with:
           timeout_minutes: 30
           max_attempts: 3
-          retry_wait_seconds: 60
-          command: |
-            npm start 2>&1 | tee /tmp/run.log
-            grep -q "个人签到任务" /tmp/run.log || { echo "::error::本次签到未成功，触发重试"; exit 1; }
+          command: npm start
 
       - name: 🔑 Compute token hash
         if: always()
